@@ -5,8 +5,8 @@
 #include <boost/functional/hash.hpp>
 
 
-static const int LITTLE_JOKER = 17;
-static const int JOKER = 18;
+static const int LITTLE_JOKER = 18;
+static const int JOKER = 19;
 
 int MostFreq(std::vector<int> list);
 

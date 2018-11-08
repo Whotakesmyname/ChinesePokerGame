@@ -81,6 +81,7 @@ std::vector<Pattern*> Hand::getAllSolutions(const Pattern* pattern) const
 		InsertResultVector<std::vector<Pattern*>>(result, this->getTriple1s(pattern));
 		InsertResultVector<std::vector<Pattern*>>(result, this->getTriples(pattern));
 		InsertResultVector<std::vector<Pattern*>>(result, this->getBombs(pattern));
+		InsertResultVector<std::vector<Pattern*>>(result, this->getRocket(pattern));
 		InsertResultVector<std::vector<Pattern*>>(result, this->getBomb1s(pattern));
 		InsertResultVector<std::vector<Pattern*>>(result, this->getBomb2s(pattern));
 		InsertResultVector<std::vector<Pattern*>>(result, this->getCouples(pattern));
@@ -493,7 +494,7 @@ std::vector<Pattern*> Hand::getPlanes(const Pattern * pattern) const
 std::vector<Pattern*> Hand::getRocket(const Pattern * pattern) const
 {
 	if (this->Cards.count(LITTLE_JOKER) > 0 && this->Cards.count(JOKER) > 0) {
-		return std::vector<Pattern*>{this->patternPool->GetPattern(Patterns::Rocket, std::vector<int>{17, 18}, 99)};
+		return std::vector<Pattern*>{this->patternPool->GetPattern(Patterns::Rocket, std::vector<int>{LITTLE_JOKER, JOKER}, 99)};
 	}
 	return std::vector<Pattern*>();
 }
