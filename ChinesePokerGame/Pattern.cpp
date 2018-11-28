@@ -7,7 +7,7 @@
 Pattern::Pattern(Patterns type, std::vector<int> cards) {
 	this->cards = cards;
 	this->type = type;
-	this->size = cards.size();
+	this->size = int(cards.size());
 	this->power = 0;
 	switch (type)
 	{
@@ -66,7 +66,7 @@ Pattern::Pattern(Patterns type, std::vector<int> cards, double power)
 	this->cards = cards;
 	this->type = type;
 	this->power = power;
-	this->size = cards.size();
+	this->size = int(cards.size());
 }
 
 bool Pattern::operator==(const Pattern& other)

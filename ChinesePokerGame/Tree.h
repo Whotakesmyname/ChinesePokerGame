@@ -52,7 +52,7 @@ public:
 
 	int GetNodeScore(Node* node);
 
-	const Node* CalcWinnableMoves(Hand* lord, Hand* farmer);
+	const Node* CalcWinnableMoves(Hand* lord, Hand* farmer, Pattern* last_move);
 
 private:
 	LumberJack* const lumberJack;

@@ -293,10 +293,10 @@ std::vector<Pattern*> Hand::getBomb2s(const Pattern * pattern) const
 				if (it1->second < 2) continue;
 				if (it1->first == kv4.first) continue;
 				for (auto it2 = it1; it2 != this->Cards.cend(); it2++) {
-					if (it1->second < 2) continue;
+					if (it2->second < 2) continue;
 					if (it2->first == kv4.first) continue;
-					if (it1 == it2 && it2->second < 4) continue;
-					result.push_back(this->patternPool->GetPattern(Patterns::Bomb1, std::vector<int>{kv4.first, kv4.first, kv4.first, kv4.first, it1->first, it1->first, it2->first, it2->first}, kv4.first));
+					if (it2 == it1 && it2->second < 4) continue;
+					result.push_back(this->patternPool->GetPattern(Patterns::Bomb2, std::vector<int>{kv4.first, kv4.first, kv4.first, kv4.first, it1->first, it1->first, it2->first, it2->first}, kv4.first));
 				}
 			}
 		}

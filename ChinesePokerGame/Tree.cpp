@@ -113,10 +113,9 @@ int Solution::GetNodeScore(Node * node)
 }
 
 // ¼ÆËã½á¹û
-const Node* Solution::CalcWinnableMoves(Hand * lord, Hand * farmer)
+const Node* Solution::CalcWinnableMoves(Hand * lord, Hand * farmer, Pattern* last_move)
 {
-	Pattern* _none = new Pattern(Patterns::None, std::vector<int>());
-	Node* root = new Node{ 0, _none, 0, lord, farmer, nullptr, nullptr};
+	Node* root = new Node{ 0, last_move, 0, lord, farmer, nullptr, nullptr};
 	this->GetNodeScore(root);
 	this->result = root;
 	return root;
