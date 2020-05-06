@@ -10,29 +10,29 @@
 
 enum class Patterns
 {
-	Rocket,//ÍõÕ¨
-	Single,//µ¥ÅÆ
-	Couple,//¶Ô×Ó
-	Triple,//3²»´ø
-	Bomb,//Õ¨µ¯
-	Triple1,//3´ø1
-	Triple2,//3´ø2
-	Bomb1,//4´ø2¸öµ¥£¬»òÕßÒ»¶Ô
-	Bomb2,//4´ø2¶Ô
-	Seq1,//Ë³×Ó
-	Seq2,//Á¬¶Ô
-	Plane,//·É»ú
-	Plane1,//·É»ú´øµ¥
-	Plane2,//·É»ú´ø¶Ô
-	None//²»³öÅÆ
+	Rocket,//ç‹ç‚¸
+	Single,//å•ç‰Œ
+	Couple,//å¯¹å­
+	Triple,//3ä¸å¸¦
+	Bomb,//ç‚¸å¼¹
+	Triple1,//3å¸¦1
+	Triple2,//3å¸¦2
+	Bomb1,//4å¸¦2ä¸ªå•ï¼Œæˆ–è€…ä¸€å¯¹
+	Bomb2,//4å¸¦2å¯¹
+	Seq1,//é¡ºå­
+	Seq2,//è¿å¯¹
+	Plane,//é£æœº
+	Plane1,//é£æœºå¸¦å•
+	Plane2,//é£æœºå¸¦å¯¹
+	None//ä¸å‡ºç‰Œ
 };
 
 class Pattern {
 public:
-	double power;  // ÅÆÁ¦
-	std::vector<int> cards;  // ×é³ÉÅÆ
-	Patterns type;  // ÅÆĞÍ
-	int size;  // Ï¸·ÖÅÆĞÍ£¨Ë³×Ó¡¢Á¬¶Ô³¤¶È£©
+	double power;  // ç‰ŒåŠ›
+	std::vector<int> cards;  // ç»„æˆç‰Œ
+	Patterns type;  // ç‰Œå‹
+	int size;  // ç»†åˆ†ç‰Œå‹ï¼ˆé¡ºå­ã€è¿å¯¹é•¿åº¦ï¼‰
 
 	Pattern(Patterns type, std::vector<int> cards);
 	Pattern(Patterns type, std::vector<int>cards, double power);

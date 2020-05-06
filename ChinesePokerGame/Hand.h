@@ -14,42 +14,42 @@ public:
 	Hand(const Hand & other);
 	Hand(PatternPool* const patternPool);
 
-	std::map<int, int> Cards;  // ÊÖÅÆ
+	std::map<int, int> Cards;  // æ‰‹ç‰Œ
 
-	Hand& Insert(int card);  // ²åÈëĞÂÅÆ
-	Hand* Delete(int card, int n) const;  // É¾³ıÄ³¼¸ÕÅÅÆ²¢·µ»ØÖ®ºóµÄÊÖÅÆ
+	Hand& Insert(int card);  // æ’å…¥æ–°ç‰Œ
+	Hand* Delete(int card, int n) const;  // åˆ é™¤æŸå‡ å¼ ç‰Œå¹¶è¿”å›ä¹‹åçš„æ‰‹ç‰Œ
 	Hand* Delete(std::vector<int> card, std::vector<int> n) const;
 	Hand* Delete(const Pattern& pattern) const;
-	std::vector<Pattern*> getAllSolutions() const;  // »ñÈ¡ËùÓĞ¿ÉÄÜ³öÅÆ×éºÏ
-	std::vector<Pattern*> getAllSolutions(const Pattern* pattern) const;  // »ñÈ¡ÏÂÒ»²½ËùÓĞ¿ÉÄÜ³öÅÆ×éºÏ
+	std::vector<Pattern*> getAllSolutions() const;  // è·å–æ‰€æœ‰å¯èƒ½å‡ºç‰Œç»„åˆ
+	std::vector<Pattern*> getAllSolutions(const Pattern* pattern) const;  // è·å–ä¸‹ä¸€æ­¥æ‰€æœ‰å¯èƒ½å‡ºç‰Œç»„åˆ
 
 	bool IsEmpty() const;
 
 private:
 	PatternPool* const patternPool;
-	std::vector<Pattern*> getSingles(const Pattern* pattern) const;  // »ñÈ¡ËùÓĞµ¥ÅÆ×éºÏ
-	std::vector<Pattern*> getCouples(const Pattern* pattern) const;  // »ñÈ¡ËùÓĞ¶Ô×Ó×éºÏ
-	std::vector<Pattern*> getTriples(const Pattern* pattern) const;  // »ñÈ¡ËùÓĞÈı²»´ø×éºÏ
-	std::vector<Pattern*> getBombs(const Pattern* pattern) const;  // »ñÈ¡ËùÓĞÕ¨µ¯×éºÏ
-	std::vector<Pattern*> getTriple1s(const Pattern* pattern) const;  // »ñÈ¡ËùÓĞ3´ø1×éºÏ
-	std::vector<Pattern*> getTriple2s(const Pattern* pattern) const;  // »ñÈ¡ËùÓĞ3´ø2×éºÏ
-	std::vector<Pattern*> getBomb1s(const Pattern* pattern) const;  // »ñÈ¡ËùÓĞÕ¨µ¯´ø1×éºÏ
-	std::vector<Pattern*> getBomb2s(const Pattern* pattern) const;  // »ñÈ¡ËùÓĞÕ¨µ¯´ø2×éºÏ
-	std::vector<Pattern*> getSeq1s(const Pattern* pattern) const;  // »ñÈ¡ËùÓĞË³×Ó×éºÏ
-	std::vector<Pattern*> getSeq2s(const Pattern* pattern) const;  // »ñÈ¡ËùÓĞÁ¬¶Ô×éºÏ
-	std::vector<Pattern*> getPlanes(const Pattern* pattern) const;  // »ñÈ¡ËùÓĞ·É»ú×éºÏ
-	//vector<Pattern*> getPlane1s(const Pattern* pattern) const;  // »ñÈ¡ËùÓĞ·É»ú´øµ¥×éºÏ
-	//vector<Pattern*> getPlane2s(const Pattern* pattern) const;  // »ñÈ¡ËùÓĞ·É»ú´ø¶Ô×éºÏ
-	std::vector<Pattern*> getRocket(const Pattern* pattern) const;  // ÍõÕ¨
-	std::vector<Pattern*> getPass(const Pattern* pattern) const;  // ²»³ö
+	std::vector<Pattern*> getSingles(const Pattern* pattern) const;  // è·å–æ‰€æœ‰å•ç‰Œç»„åˆ
+	std::vector<Pattern*> getCouples(const Pattern* pattern) const;  // è·å–æ‰€æœ‰å¯¹å­ç»„åˆ
+	std::vector<Pattern*> getTriples(const Pattern* pattern) const;  // è·å–æ‰€æœ‰ä¸‰ä¸å¸¦ç»„åˆ
+	std::vector<Pattern*> getBombs(const Pattern* pattern) const;  // è·å–æ‰€æœ‰ç‚¸å¼¹ç»„åˆ
+	std::vector<Pattern*> getTriple1s(const Pattern* pattern) const;  // è·å–æ‰€æœ‰3å¸¦1ç»„åˆ
+	std::vector<Pattern*> getTriple2s(const Pattern* pattern) const;  // è·å–æ‰€æœ‰3å¸¦2ç»„åˆ
+	std::vector<Pattern*> getBomb1s(const Pattern* pattern) const;  // è·å–æ‰€æœ‰ç‚¸å¼¹å¸¦1ç»„åˆ
+	std::vector<Pattern*> getBomb2s(const Pattern* pattern) const;  // è·å–æ‰€æœ‰ç‚¸å¼¹å¸¦2ç»„åˆ
+	std::vector<Pattern*> getSeq1s(const Pattern* pattern) const;  // è·å–æ‰€æœ‰é¡ºå­ç»„åˆ
+	std::vector<Pattern*> getSeq2s(const Pattern* pattern) const;  // è·å–æ‰€æœ‰è¿å¯¹ç»„åˆ
+	std::vector<Pattern*> getPlanes(const Pattern* pattern) const;  // è·å–æ‰€æœ‰é£æœºç»„åˆ
+	//vector<Pattern*> getPlane1s(const Pattern* pattern) const;  // è·å–æ‰€æœ‰é£æœºå¸¦å•ç»„åˆ
+	//vector<Pattern*> getPlane2s(const Pattern* pattern) const;  // è·å–æ‰€æœ‰é£æœºå¸¦å¯¹ç»„åˆ
+	std::vector<Pattern*> getRocket(const Pattern* pattern) const;  // ç‹ç‚¸
+	std::vector<Pattern*> getPass(const Pattern* pattern) const;  // ä¸å‡º
 
-	// ·Ö½â³¤Ë³×Ó£¬·µ»Ø°üº¬×ÔÉíµÄËùÓĞ¿ÉÄÜÇé¿ö
+	// åˆ†è§£é•¿é¡ºå­ï¼Œè¿”å›åŒ…å«è‡ªèº«çš„æ‰€æœ‰å¯èƒ½æƒ…å†µ
 	std::vector<Pattern*> DissolveLongSeq1(Pattern* pattern) const;
 
-	// ·Ö½â³¤Á¬¶Ô£¬·µ»Ø°üº¬×ÔÉíµÄËùÓĞ¿ÉÄÜÇé¿ö
+	// åˆ†è§£é•¿è¿å¯¹ï¼Œè¿”å›åŒ…å«è‡ªèº«çš„æ‰€æœ‰å¯èƒ½æƒ…å†µ
 	std::vector<Pattern*> DissolveLongSeq2(Pattern* pattern) const;
 
-	// ·Ö½â³¤·É»ú£¬·µ»Ø°üº¬×ÔÉíµÄËùÓĞ¿ÉÄÜÇé¿ö
+	// åˆ†è§£é•¿é£æœºï¼Œè¿”å›åŒ…å«è‡ªèº«çš„æ‰€æœ‰å¯èƒ½æƒ…å†µ
 	std::vector<Pattern*> DissolvePlane(Pattern* pattern) const;
 };
 

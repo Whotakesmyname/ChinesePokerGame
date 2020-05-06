@@ -12,12 +12,12 @@ Hand::Hand() : patternPool(new PatternPool())
 {
 }
 
-Hand::Hand(const Hand & other) : patternPool(other.patternPool)
+Hand::Hand(const Hand& other) : patternPool(other.patternPool)
 {
 	this->Cards = std::map<int, int>(other.Cards);
 }
 
-Hand::Hand(PatternPool * const patternPool) : patternPool(patternPool)
+Hand::Hand(PatternPool* const patternPool) : patternPool(patternPool)
 {
 }
 
@@ -56,7 +56,7 @@ Hand* Hand::Delete(std::vector<int> card, std::vector<int> n) const
 	return _hand;
 }
 
-Hand* Hand::Delete(const Pattern & pattern) const
+Hand* Hand::Delete(const Pattern& pattern) const
 {
 	Hand* _hand = new Hand(*this);
 	for (int card : pattern.cards) {
@@ -183,7 +183,7 @@ std::vector<Pattern*> Hand::getAllSolutions() const
 	return result;
 }
 
-std::vector<Pattern*> Hand::getSingles(const Pattern * pattern) const
+std::vector<Pattern*> Hand::getSingles(const Pattern* pattern) const
 {
 	std::vector<Pattern*> result;
 	auto it = this->Cards.begin();
@@ -197,7 +197,7 @@ std::vector<Pattern*> Hand::getSingles(const Pattern * pattern) const
 	return result;
 }
 
-std::vector<Pattern*> Hand::getCouples(const Pattern * pattern) const
+std::vector<Pattern*> Hand::getCouples(const Pattern* pattern) const
 {
 	std::vector<Pattern*> result;
 	for (auto& kv : this->Cards) {
@@ -208,7 +208,7 @@ std::vector<Pattern*> Hand::getCouples(const Pattern * pattern) const
 	return result;
 }
 
-std::vector<Pattern*> Hand::getTriples(const Pattern * pattern) const
+std::vector<Pattern*> Hand::getTriples(const Pattern* pattern) const
 {
 	std::vector<Pattern*> result;
 	for (auto& kv : this->Cards) {
@@ -219,18 +219,19 @@ std::vector<Pattern*> Hand::getTriples(const Pattern * pattern) const
 	return result;
 }
 
-std::vector<Pattern*> Hand::getBombs(const Pattern * pattern) const
+std::vector<Pattern*> Hand::getBombs(const Pattern* pattern) const
 {
 	std::vector<Pattern*> result;
 	for (auto& kv : this->Cards) {
-		if (kv.second >= 4 && kv.first > pattern->power) {
+		// when the previous hand is another bomb with a greater than or equal power, this bomb is not legal
+		if (kv.second >= 4 && !((pattern->type == Patterns::Bomb) && (kv.first <= pattern->power))) {
 			result.push_back(this->patternPool->GetPattern(Patterns::Couple, std::vector<int>(4, kv.first)));
 		}
 	}
 	return result;
 }
 
-std::vector<Pattern*> Hand::getTriple1s(const Pattern * pattern) const
+std::vector<Pattern*> Hand::getTriple1s(const Pattern* pattern) const
 {
 	std::vector<Pattern*> result;
 	for (auto& kv : this->Cards) {
@@ -245,7 +246,7 @@ std::vector<Pattern*> Hand::getTriple1s(const Pattern * pattern) const
 	return result;
 }
 
-std::vector<Pattern*> Hand::getTriple2s(const Pattern * pattern) const
+std::vector<Pattern*> Hand::getTriple2s(const Pattern* pattern) const
 {
 	std::vector<Pattern*> result;
 	for (auto& kv : this->Cards) {
@@ -260,7 +261,7 @@ std::vector<Pattern*> Hand::getTriple2s(const Pattern * pattern) const
 	return result;
 }
 
-std::vector<Pattern*> Hand::getBomb1s(const Pattern * pattern) const
+std::vector<Pattern*> Hand::getBomb1s(const Pattern* pattern) const
 {
 	std::vector<Pattern*> result;
 	for (auto& kv4 : this->Cards) {
@@ -284,7 +285,7 @@ std::vector<Pattern*> Hand::getBomb1s(const Pattern * pattern) const
 	return result;
 }
 
-std::vector<Pattern*> Hand::getBomb2s(const Pattern * pattern) const
+std::vector<Pattern*> Hand::getBomb2s(const Pattern* pattern) const
 {
 	std::vector<Pattern*> result;
 	for (auto& kv4 : this->Cards) {
@@ -304,12 +305,12 @@ std::vector<Pattern*> Hand::getBomb2s(const Pattern * pattern) const
 	return result;
 }
 
-std::vector<Pattern*> Hand::getSeq1s(const Pattern * pattern) const
+std::vector<Pattern*> Hand::getSeq1s(const Pattern* pattern) const
 {
 	std::vector<Pattern*> result;
 	int prev = 0;
 	int count = 0;
-	// ¶ÔÓ¦Ë³×ÓÅÆĞÍÊ±£¬¼ò»¯Ëã·¨
+	// å¯¹åº”é¡ºå­ç‰Œå‹æ—¶ï¼Œç®€åŒ–ç®—æ³•
 	if (pattern->type == Patterns::Seq1) {
 		for (auto it = this->Cards.begin(); it != this->Cards.end(); it++) {
 			if (it->first - prev == 1) {
@@ -328,7 +329,7 @@ std::vector<Pattern*> Hand::getSeq1s(const Pattern * pattern) const
 		return result;
 	}
 
-	// ÉÏÊÖPASSÊ±Çó×î³¤Ë³×Óµ¼³öÈ«²¿sizeË³×Ó
+	// ä¸Šæ‰‹PASSæ—¶æ±‚æœ€é•¿é¡ºå­å¯¼å‡ºå…¨éƒ¨sizeé¡ºå­
 	for (auto& kv : this->Cards) {
 		if (kv.first - prev == 1) {
 			count++;
@@ -358,12 +359,12 @@ std::vector<Pattern*> Hand::getSeq1s(const Pattern * pattern) const
 	return result;
 }
 
-std::vector<Pattern*> Hand::getSeq2s(const Pattern * pattern) const
+std::vector<Pattern*> Hand::getSeq2s(const Pattern* pattern) const
 {
 	std::vector<Pattern*> result;
 	int prev = 0;
 	int count = 0;
-	// ¶ÔÓ¦Á¬¶ÔÅÆĞÍÊ±£¬¼ò»¯Ëã·¨
+	// å¯¹åº”è¿å¯¹ç‰Œå‹æ—¶ï¼Œç®€åŒ–ç®—æ³•
 	if (pattern->type == Patterns::Seq2) {
 		int length = pattern->size >> 1;
 		for (auto it = this->Cards.begin(); it != this->Cards.end(); it++) {
@@ -373,7 +374,7 @@ std::vector<Pattern*> Hand::getSeq2s(const Pattern * pattern) const
 			else {
 				count = 1;
 			}
-			if (count >= length && it->first > pattern->power && it->second >= 2) {
+			if (count >= length && it->first > pattern->power&& it->second >= 2) {
 				std::vector<int> _vec(pattern->size);
 				for (int i = 0; i < length; i++) {
 					_vec[2 * i] = prev - length + 1 + i;
@@ -423,12 +424,12 @@ std::vector<Pattern*> Hand::getSeq2s(const Pattern * pattern) const
 	return result;
 }
 
-std::vector<Pattern*> Hand::getPlanes(const Pattern * pattern) const
+std::vector<Pattern*> Hand::getPlanes(const Pattern* pattern) const
 {
 	std::vector<Pattern*> result;
 	int prev = 0;
 	int count = 0;
-	// ¶ÔÓ¦·É»úÅÆĞÍÊ±£¬¼ò»¯Ëã·¨
+	// å¯¹åº”é£æœºç‰Œå‹æ—¶ï¼Œç®€åŒ–ç®—æ³•
 	if (pattern->type == Patterns::Plane) {
 		int length = pattern->size / 3;
 		for (auto it = this->Cards.begin(); it != this->Cards.end(); it++) {
@@ -438,7 +439,7 @@ std::vector<Pattern*> Hand::getPlanes(const Pattern * pattern) const
 			else {
 				count = 1;
 			}
-			if (count >= length && it->first > pattern->power && it->second >= 3) {
+			if (count >= length && it->first > pattern->power&& it->second >= 3) {
 				std::vector<int> _vec(pattern->size);
 				for (int i = 0; i < length; i++) {
 					_vec[3 * i] = prev - length + 1 + i;
@@ -491,7 +492,7 @@ std::vector<Pattern*> Hand::getPlanes(const Pattern * pattern) const
 	return result;
 }
 
-std::vector<Pattern*> Hand::getRocket(const Pattern * pattern) const
+std::vector<Pattern*> Hand::getRocket(const Pattern* pattern) const
 {
 	if (this->Cards.count(LITTLE_JOKER) > 0 && this->Cards.count(JOKER) > 0) {
 		return std::vector<Pattern*>{this->patternPool->GetPattern(Patterns::Rocket, std::vector<int>{LITTLE_JOKER, JOKER}, 99)};
@@ -499,7 +500,7 @@ std::vector<Pattern*> Hand::getRocket(const Pattern * pattern) const
 	return std::vector<Pattern*>();
 }
 
-std::vector<Pattern*> Hand::getPass(const Pattern * pattern) const
+std::vector<Pattern*> Hand::getPass(const Pattern* pattern) const
 {
 	return std::vector<Pattern*>{this->patternPool->GetPattern(Patterns::None, std::vector<int>(), 0)};
 }
@@ -553,7 +554,7 @@ HandPool::HandPool() : handPool(new std::unordered_map<std::vector<uint8_t>, Han
 {
 }
 
-const Hand * HandPool::Delete(const Hand * hand, const Pattern * pattern)
+const Hand* HandPool::Delete(const Hand* hand, const Pattern* pattern)
 {
 	Hand* resultHand = nullptr;
 	std::vector<uint8_t> key;
@@ -565,10 +566,10 @@ const Hand * HandPool::Delete(const Hand * hand, const Pattern * pattern)
 		while (it_vec != pattern->cards.end() && it_map->first == *it_vec) {
 			n--;
 			it_vec++;
-		 }
+		}
 		assert(n >= 0);
 		if (n > 0) {
-			// KeyÎª8Î»ÕûÊı£¬¸ß5Î»±íÊ¾ÅÆĞÍ´óĞ¡£¨×î´ó31£¬Êµ¼Ê×î´ó18£©£¬µÍ3Î»±íÊ¾ÊıÁ¿£¬×î´ó8×îĞ¡1
+			// Keyä¸º8ä½æ•´æ•°ï¼Œé«˜5ä½è¡¨ç¤ºç‰Œå‹å¤§å°ï¼ˆæœ€å¤§31ï¼Œå®é™…æœ€å¤§18ï¼‰ï¼Œä½3ä½è¡¨ç¤ºæ•°é‡ï¼Œæœ€å¤§8æœ€å°1
 			key.push_back((((uint8_t)it_map->first) << 3) + (n - 1));
 		}
 		it_map++;

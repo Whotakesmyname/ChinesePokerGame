@@ -10,7 +10,7 @@ static const int JOKER = 19;
 
 int MostFreq(std::vector<int> list);
 
-// µÃµ½·É»úµÄÅÆÁ¦£»list±ØÐësort¹ý¡£
+// å¾—åˆ°é£žæœºçš„ç‰ŒåŠ›ï¼›listå¿…é¡»sortè¿‡ã€‚
 int getPlanePower(std::vector<int> list);
 
 template <typename Container> // we can make this generic for any container

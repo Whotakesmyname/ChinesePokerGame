@@ -14,9 +14,9 @@ class HandPool;
 
 struct Node
 {
-	short layer;  // µ±Ç°²ãÊı£¬µØÖ÷µÚÒ»²½Îª1
-	const Pattern* move;  // ÉÏÒ»²½ÅÆĞÍ
-	short score;  // Íæ¼ÒµÃ·Ö¡£Ä¬ÈÏ0£¬Íæ¼ÒÓ®1£¬Íæ¼ÒÊä-1 ¡£
+	short layer;  // å½“å‰å±‚æ•°ï¼Œåœ°ä¸»ç¬¬ä¸€æ­¥ä¸º1
+	const Pattern* move;  // ä¸Šä¸€æ­¥ç‰Œå‹
+	short score;  // ç©å®¶å¾—åˆ†ã€‚é»˜è®¤0ï¼Œç©å®¶èµ¢1ï¼Œç©å®¶è¾“-1 ã€‚
 	const Hand* lord;
 	const Hand* farmer;
 	const std::vector<Node*>* children;

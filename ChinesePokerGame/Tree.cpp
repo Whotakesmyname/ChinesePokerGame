@@ -29,7 +29,7 @@ std::vector<Node*>* Solution::GetNextMoves(Node * node)
 					delete _p;
 				}
 				delete result;
-				return new std::vector<Node*>{_child};  // µ±Ä³Ò»²½¿ÉÒÔ³ö¿Õ£¬ÔòÀíÐÔ¾ö²ß±Ø×ßÕâ²½
+				return new std::vector<Node*>{_child};  // å½“æŸä¸€æ­¥å¯ä»¥å‡ºç©ºï¼Œåˆ™ç†æ€§å†³ç­–å¿…èµ°è¿™æ­¥
 			}
 			result->push_back(_child);
 		}
@@ -61,7 +61,7 @@ int Solution::GetNodeScore(Node * node)
 	std::vector<Node*>* _children = this->GetNextMoves(node);
 	if ((node->layer & 1) == 1) {  // Farmer's turn
 		_score = 1;
-		// ²¢ÐÐÊµÏÖµÚ¶þ²½£¨Å©Ãñ²½Öè£©
+		// å¹¶è¡Œå®žçŽ°ç¬¬äºŒæ­¥ï¼ˆå†œæ°‘æ­¥éª¤ï¼‰
 		if (node->layer == 1) {
 			std::vector<std::future<int>> futures;
 			for (Node* _child : *_children) {
@@ -80,7 +80,7 @@ int Solution::GetNodeScore(Node * node)
 				int __score = GetNodeScore(_child);
 				if (__score < 0) {
 					_score = __score;
-					break;  // Å©Ãñ/¶Ô·½Î´±Ø×öÀíÐÔ¾ö²ß£¨ÊÂÊµÉÏÔÚ±ØÊ¤²ßÂÔÏÂ¶Ô·½Ó¦¸Ã²»×ö¾ö²ß)Òò´Ë²»Óè¼ôÖ¦
+					break;  // å†œæ°‘/å¯¹æ–¹æœªå¿…åšç†æ€§å†³ç­–ï¼ˆäº‹å®žä¸Šåœ¨å¿…èƒœç­–ç•¥ä¸‹å¯¹æ–¹åº”è¯¥ä¸åšå†³ç­–)å› æ­¤ä¸äºˆå‰ªæž
 				}
 			}
 		}
@@ -89,7 +89,7 @@ int Solution::GetNodeScore(Node * node)
 	{
 		_score = -1;
 		auto it_child = _children->begin();
-		while (it_child != _children->end()) {  // ¼ôÖ¦¡£Ö»ÁôÏÂ×îÏÈ·¢ÏÖµÄ±ØÊ¤×ÓÊ÷¡£
+		while (it_child != _children->end()) {  // å‰ªæžã€‚åªç•™ä¸‹æœ€å…ˆå‘çŽ°çš„å¿…èƒœå­æ ‘ã€‚
 			int __score = GetNodeScore(*it_child);
 			if (__score > 0) {
 				_score = __score;
@@ -112,7 +112,7 @@ int Solution::GetNodeScore(Node * node)
 	return _score;
 }
 
-// ¼ÆËã½á¹û
+// è®¡ç®—ç»“æžœ
 const Node* Solution::CalcWinnableMoves(Hand * lord, Hand * farmer, Pattern* last_move)
 {
 	Node* root = new Node{ 0, last_move, 0, lord, farmer, nullptr, nullptr};
