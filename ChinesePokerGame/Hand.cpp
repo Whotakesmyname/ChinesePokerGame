@@ -213,7 +213,7 @@ std::vector<Pattern*> Hand::getTriples(const Pattern* pattern) const
 	std::vector<Pattern*> result;
 	for (auto& kv : this->Cards) {
 		if (kv.second >= 3 && kv.first > pattern->power) {
-			result.push_back(this->patternPool->GetPattern(Patterns::Couple, std::vector<int>(3, kv.first)));
+			result.push_back(this->patternPool->GetPattern(Patterns::Triple, std::vector<int>(3, kv.first)));
 		}
 	}
 	return result;
@@ -225,7 +225,7 @@ std::vector<Pattern*> Hand::getBombs(const Pattern* pattern) const
 	for (auto& kv : this->Cards) {
 		// when the previous hand is another bomb with a greater than or equal power, this bomb is not legal
 		if (kv.second >= 4 && !((pattern->type == Patterns::Bomb) && (kv.first <= pattern->power))) {
-			result.push_back(this->patternPool->GetPattern(Patterns::Couple, std::vector<int>(4, kv.first)));
+			result.push_back(this->patternPool->GetPattern(Patterns::Bomb, std::vector<int>(4, kv.first)));
 		}
 	}
 	return result;
@@ -544,7 +544,7 @@ std::vector<Pattern*> Hand::DissolvePlane(Pattern* pattern) const
 	std::vector<Pattern*> result{ pattern };
 	for (int len = 6; len < pattern->cards.size(); len += 3) {
 		for (auto it = pattern->cards.begin(); it + (len - 1) != pattern->cards.end(); it += 3) {
-			result.push_back(this->patternPool->GetPattern(Patterns::Seq2, std::vector<int>(it, it + len), *(it + len - 1)));
+			result.push_back(this->patternPool->GetPattern(Patterns::Plane, std::vector<int>(it, it + len), *(it + len - 1)));
 		}
 	}
 	return result;
