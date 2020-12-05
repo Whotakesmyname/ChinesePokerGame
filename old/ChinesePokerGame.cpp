@@ -1,12 +1,3 @@
-// ChinesePokerGame.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-#include "pch.h"
-
-#ifndef NDEBUG
-#define NDEBUG
-#endif // !NDEBUG
-
-
 #include <vector>
 #include <map>
 #include <unordered_map>

@@ -1,8 +1,6 @@
 #pragma once
-#include "pch.h"
 
 #include <vector>
-#include <boost/functional/hash.hpp>
 
 
 static const int LITTLE_JOKER = 18;
