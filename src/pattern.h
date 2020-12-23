@@ -13,6 +13,9 @@
 #include <tuple>
 #include <compare>
 
+#include "card.h"
+#include "utils.h"
+
 enum class Patterns
 {
     None,    //不出牌
@@ -31,8 +34,6 @@ enum class Patterns
     Plane1,  //飞机带单
     Plane2   //飞机带对
 };
-
-constexpr unsigned int kCardsPerPack = 54UL;
 
 /**
  * @brief class represents card patterns
@@ -57,9 +58,23 @@ public:
     Pattern(const Pattern&) = default;
 
     // Construct a pattern with detailed configuration with designated type without checking
-    Pattern(Patterns, std::initializer_list<std::pair<int, int>>);
+    // @param pattern_list: {{card_value, num}, ...}
+    Pattern(Patterns pattern_type, std::initializer_list<std::pair<Card, int>> pattern_list): type_(pattern_type) {
+        std::bitset<CARD_PACKS_N * kCardsPerPack> pattern;
+        for (const auto& pair : pattern_list) {
+            size_t begin_i = utils::bitset_begin<CARD_PACKS_N>(pair.first);
+            for (size_t i = begin_i; i < begin_i + pair.second; ++i) {
+                pattern.set(i);
+            }
+        }
+        pattern_ = std::move(pattern);
+    }
     
     ~Pattern() = default;
 
-    std::partial_ordering operator<=>(const Pattern&) const;
+    // compare function
+    // partial ordering because patterns are not always comparable
+    std::partial_ordering operator<=>(const Pattern&) const {
+
+    }
 };
