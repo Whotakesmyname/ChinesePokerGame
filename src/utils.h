@@ -9,5 +9,7 @@
  * 
  */
 
+#pragma once
+
 constexpr unsigned int kCardsPerPack = 54UL;
 constexpr unsigned int kCardTypesPerPack = 15UL;
