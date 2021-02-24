@@ -9,7 +9,7 @@
 *.userosscache
 *.sln.docstates
 .DS_Store
-.vscode/*
+.vscode/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -331,3 +331,6 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+# interproduct of compile
+*.gch
