@@ -1,12 +1,6 @@
 /**
- * @file card.h
- * @author Harrison Chen (darkray@126.com)
  * @brief Card class representing single card and collection of cards and dealing with conversion between char/int and cards
- * @version 1.0
  * @date 2020-12-20
- * 
- * @copyright Copyright (c) 2020
- * 
  */
 
 #pragma once
@@ -18,6 +12,7 @@
 #include <stdexcept>
 #include <cstddef>
 #include <iterator>
+#include <vector>
 
 #include "utils.h"
 
@@ -46,15 +41,45 @@ enum class Card : size_t
 template <size_t CARD_PACKS_N>
 class Cards
 {
-protected:
-    template <size_t val>
-    constexpr size_t _most_significant_bit() { return val ? 1 + _most_significant_bit(val >> 1) : -1; }
-
+public:
     // bit length needed to represent a type of card
-    static constexpr size_t needed_bit_length_ = _most_significant_bit<4 * CARD_PACKS_N>() + 1U;
+    static constexpr size_t needed_bit_length_ = utils::most_significant_bit<4 * CARD_PACKS_N>() + 1U;
 
     using data_type = std::bitset<needed_bit_length_ * kCardTypesPerPack>;
 
+    Cards() = default;
+
+    Cards(Cards<CARD_PACKS_N>&&) = default;
+
+    Cards(data_type bitset): data_(std::move(bitset)) {}
+
+    // @param pattern_list: {{card_value, num}, ...}
+    Cards(std::vector<std::pair<Card, int>> card_list)
+    {
+        data_type data;
+        for (const auto &pair : card_list)
+        {
+            if ((pair.second >> (needed_bit_length_ - 1)) > 0)
+            {
+                throw std::overflow_error("Card num overflowed.");
+            }
+            int offset = static_cast<size_t>(pair.first) * needed_bit_length_;
+            auto new_val = data_type(pair.second) << offset;
+            data |= new_val;
+        }
+        data_ = std::move(data);
+    }
+    ~Cards() = default;
+
+    bool operator==(const Cards<CARD_PACKS_N>& o) const {
+        return data_ == o.data_;
+    }
+
+    const data_type& get_data() const {
+        return data_;
+    }
+
+protected:
     // mask bits used as guard bits
     static constexpr data_type guard_bits_mask_ = [] {
         data_type b;
@@ -157,29 +182,20 @@ protected:
     };
 
 public:
-    Cards() = default;
-
-    // @param pattern_list: {{card_value, num}, ...}
-    Cards(std::initializer_list<std::pair<Card, int>> card_list)
-    {
-        data_type data;
-        for (const auto &pair : card_list)
-        {
-            if ((pair.second >> (needed_bit_length_ - 1)) > 0)
-            {
-                throw std::overflow_error("Card num overflowed.");
-            }
-            int offset = static_cast<size_t>(pair.first) * needed_bit_length_;
-            auto new_val = data_type(pair.second) << offset;
-            data |= new_val;
-        }
-        data_ = std::move(data);
-    }
-    ~Cards() = default;
-
     iterator begin() { return iterator(&data_, 0); }
     iterator end() { return iterator(&data_, kCardTypesPerPack); }
 };
+
+// hash definition
+namespace std {
+    template<size_t CARD_PACKS_N>
+    struct hash<Cards<CARD_PACKS_N>> {
+        using obj_t = Cards<CARD_PACKS_N>;
+        size_t operator()(const obj_t& obj) const noexcept {
+            return hash<typename obj_t::data_type>{}(obj.data_);
+        }
+    };
+}
 
 namespace utils
 {

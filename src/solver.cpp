@@ -10,9 +10,18 @@
  */
 
 #include "pattern.h"
+#include "hand.h"
+#include "pool.h"
+#include "utils.h"
 
 // 牌副数, 每副54张
-#define CARD_PACKS_N 1
+constexpr size_t CARD_PACKS_N = 1;
+
+// a solver instance contains all necessary information to solve a game
+class Solver {
+    using hand_t = Hand<CARD_PACKS_N>;
+    using pattern_t = Pattern<CARD_PACKS_N>;
+};
 
 int main(int argc, char const *argv[])
 {

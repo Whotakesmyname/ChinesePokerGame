@@ -1,20 +1,17 @@
 /**
- * @file Pattern.h
  * @brief pattern class represents a legal combination of cards
  * @version 2.0
  * @date 2020-12-04
- * 
- * @copyright Copyright (c) 2020
- * 
  */
 
 #pragma once
 
 #include <bitset>
 #include <cmath>
-#include <initializer_list>
+#include <vector>
 #include <tuple>
 #include <compare>
+#include <algorithm>
 
 #include "card.h"
 #include "utils.h"
@@ -59,8 +56,10 @@ public:
 
     // Construct a pattern with detailed configuration with designated type without checking
     // @param pattern_list: {{card_value, num}, ...}
-    Pattern(Patterns pattern_type, std::initializer_list<std::pair<Card, int>> pattern_list) : Cards<CARD_PACKS_N>(pattern_list), type_(pattern_type)
+    Pattern(Patterns pattern_type, std::vector<std::pair<Card, int>> pattern_list) : Cards<CARD_PACKS_N>(pattern_list), type_(pattern_type)
     {
+        // sort first
+        std::sort(pattern_list.begin(), pattern_list.end());
         // decide power
         switch (pattern_type)
         {
@@ -174,5 +173,9 @@ public:
             return std::partial_ordering::less;
         }
         return std::partial_ordering::unordered;
+    }
+
+    bool operator==(const Pattern& o) const {
+        return (type_ == o.type_ && power_ == o.power_) ? true : false;
     }
 };
