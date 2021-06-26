@@ -1,0 +1,2 @@
+add_executable(chinese_poker_game_solver solver.cpp)
+target_compile_features(chinese_poker_game_solver PUBLIC cxx_std_20)
