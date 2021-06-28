@@ -6,12 +6,12 @@
 
 #pragma once
 
-#include <bitset>
 #include <cmath>
 #include <vector>
 #include <tuple>
 #include <compare>
 #include <algorithm>
+#include <unordered_set>
 
 #include "card.h"
 #include "utils.h"
@@ -46,6 +46,8 @@ class Pattern : public Cards<CARD_PACKS_N>
 private:
     Patterns type_;
     uint32_t power_;
+public:
+    std::unordered_set<const Pattern* const> larger_patterns_;  // patterns of the opponent larger than this pattern
 
 public:
     // Construct an empty pattern referring to None
@@ -53,6 +55,15 @@ public:
 
     // Copy constructor
     Pattern(const Pattern &) = default;
+
+    // Move constructor
+    Pattern(Pattern&&) = default;
+
+    // assignment operator
+    Pattern& operator=(const Pattern&) = default;
+
+    // move assignment operator
+    Pattern& operator=(Pattern&&) = default;
 
     // Construct a pattern with detailed configuration with designated type without checking
     // @param pattern_list: {{card_value, num}, ...}
@@ -179,3 +190,14 @@ public:
         return (type_ == o.type_ && power_ == o.power_) ? true : false;
     }
 };
+
+// hash definition
+namespace std {
+    template<size_t CARD_PACKS_N>
+    struct hash<Pattern<CARD_PACKS_N>> {
+        using obj_t = Pattern<CARD_PACKS_N>;
+        size_t operator()(const obj_t& obj) const noexcept {
+            return hash<typename obj_t::data_type>{}(obj.data_);
+        }
+    };
+}

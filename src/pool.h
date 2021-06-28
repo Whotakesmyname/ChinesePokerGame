@@ -10,6 +10,7 @@
 #include <mutex>
 #include <shared_mutex>
 #include <concepts>
+#include <utility>
 
 #include "card.h"
 
@@ -20,43 +21,32 @@ class Pool
 {
 public:
     using obj_t = T<CARD_PACKS_N>;
-    using ptr_t = std::shared_ptr<obj_t>;
+    using ptr_t = std::unique_ptr<obj_t>;
 
-    Pool() = default;
-
-    ptr_t try_get(typename obj_t::data_type bitset) const {
-        {
-            std::shared_lock read_lock(mutex_);
-            if (auto it = map_.find(bitset); it != map_.end()) {
-                return it->second;
-            }
-        }
-        return nullptr;
+    Pool() {
+        object_pool_.reserve(kPoolSize);
     }
 
-    ptr_t get_or_create(obj_t&& obj, bool try_get_first = true) {
-        // check in read mode first
-        if (try_get_first)
-        {
-            std::shared_lock read_lock(mutex_);
-            if (auto it = map_.find(obj.get_data()); it != map_.end()) {
-                return it->second;
-            }
+    template<typename ...Args>
+    obj_t* get_or_create(Args&& ...args) {
+        obj_t tmp = obj_t(std::forward<Args>(args)...);
+        auto it = map_.find(tmp.get_data());
+        if (it != map_.end()) {
+            return it->second;
+        } else {
+            obj_t& ele = object_pool_.emplace_back(std::move(tmp));
+            map_.emplace(ele.get_data(), &ele);
+            return &ele;
         }
-        // not exist, add
-        {
-            std::scoped_lock write_lock(mutex_);
-            if (auto it = map_.find(obj.get_data()); it == map_.end()) {
-                ptr_t ptr(new obj_t(obj));
-                map_.insert(std::pair(ptr->get_data(), ptr));
-                return ptr;
-            } else {
-                return it->second;
-            }
-        }
+    }
+
+    void reset() {
+        map_.clear();
+        object_pool_ = std::vector<obj_t>();  //TODO: there is excessive deallocation & reallocation
+        object_pool_.reserve(kPoolSize);
     }
     
 private:
-    std::unordered_map<typename obj_t::data_type, ptr_t> map_;
-    std::shared_mutex mutex_;
+    std::vector<obj_t> object_pool_;
+    std::unordered_map<typename obj_t::data_type, obj_t *const> map_;
 };

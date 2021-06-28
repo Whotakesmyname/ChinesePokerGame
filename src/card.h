@@ -37,13 +37,14 @@ enum class Card : size_t
 };
 
 // Cards is a collection of cards iterable in a kv form
-// Generally, it is supposed to act like a iterable kv container
 template <size_t CARD_PACKS_N>
 class Cards
 {
 public:
+    // cards num per card type
+    static constexpr size_t cardsn_per_type_ = 4U * CARD_PACKS_N;
     // bit length needed to represent a type of card
-    static constexpr size_t needed_bit_length_ = utils::most_significant_bit<4 * CARD_PACKS_N>() + 1U;
+    static constexpr size_t needed_bit_length_ = std::bit_width(cardsn_per_type);
 
     using data_type = std::bitset<needed_bit_length_ * kCardTypesPerPack>;
 
@@ -51,23 +52,26 @@ public:
 
     Cards(Cards<CARD_PACKS_N>&&) = default;
 
-    Cards(data_type bitset): data_(std::move(bitset)) {}
-
     // @param pattern_list: {{card_value, num}, ...}
     Cards(std::vector<std::pair<Card, int>> card_list)
     {
         data_type data;
-        for (const auto &pair : card_list)
+        unsigned short flag = 0U;
+        for (const auto &&pair : card_list)
         {
-            if ((pair.second >> (needed_bit_length_ - 1)) > 0)
+            if (pair.second > cardsn_per_type_)
             {
                 throw std::overflow_error("Card num overflowed.");
             }
-            int offset = static_cast<size_t>(pair.first) * needed_bit_length_;
-            auto new_val = data_type(pair.second) << offset;
-            data |= new_val;
+
+            if (pair.second > 0) {
+                flag |= 1 << static_cast<size_t>(pair.first);
+                int offset = static_cast<size_t>(pair.first) * needed_bit_length_;
+                data |= data_type(pair.second) << offset;
+            }
         }
         data_ = std::move(data);
+        card_flag_ = flag;
     }
     ~Cards() = default;
 
@@ -80,110 +84,63 @@ public:
     }
 
 protected:
-    // mask bits used as guard bits
-    static constexpr data_type guard_bits_mask_ = [] {
-        data_type b;
-        for (size_t i = needed_bit_length_ - 1ULL; i < b.size(); i += needed_bit_length_)
-        {
-            b.set(i);
-        }
-        return b;
-    }();
+    static constexpr data_type one_card_type_mask_ = data_type((1ULL << needed_bit_length_) - 1ULL);  // bit mask to extract one card type
 
-    static constexpr data_type one_card_type_mask_ = data_type((1ULL << needed_bit_length_) - 1ULL);
+    data_type data_;  // cards number aggregation
+    unsigned short card_flag_;  // card type existence flag
 
-    data_type data_;
-
+    // proxy object to handle midifications of a card's number
     class proxy
     {
+        const Cards *obj_ptr_;
+        const size_t index_;
         const size_t offset_;
-        const data_type *data_ptr_;
 
     public:
-        proxy(const data_type *data_ptr, size_t index) : data_ptr_(data_ptr), offset_(index * needed_bit_length_) {}
+        proxy(const Cards *obj_ptr, size_t index) : obj_ptr_(obj_ptr), index_(index), offset_(index * needed_bit_length_) {}
+        proxy(const proxy&) = delete;
+        proxy(proxy&&) = default;
 
-        size_t operator=(size_t num)
+        inline operator size_t() const
         {
-            if ((num >> (needed_bit_length_ - 1)) > 0)
+            return (((obj_ptr_->data_) >> offset_) & one_card_type_mask_).to_ullong();
+        }
+
+        inline size_t operator=(size_t num)
+        {
+            if (num > cardsn_per_type_)
             {
                 throw std::overflow_error("Card num overflowed.");
             }
-            auto new_val = data_type(num) << offset_;
-            *data_ptr_ &= !(one_card_type_mask_ << offset_);
-            *data_ptr_ |= new_val;
+
+            if (num > 0) {
+                obj_ptr_->card_flag_ |= 1U << index_;
+                obj_ptr_->data_ &= ~(one_card_type_mask_ << offset_);
+                obj_ptr_->data_ |= data_type(num) << offset_;
+            } else {
+                obj_ptr_->card_flag_ &= ~(1U << index_);
+                obj_ptr_->data_ &= ~(one_card_type_mask_ << offset_);
+            }
             return num;
         }
 
-        operator size_t() const
+        inline size_t operator+=(size_t num)
         {
-            return (((*data_ptr_) >> offset_) & one_card_type_mask_).to_ullong();
+            size_t old_v = (((obj_ptr_->data_) >> offset_) & one_card_type_mask_).to_ullong();
+            size_t new_v = old_v + num;
+            return operator=(new_v);
+        }
+
+        inline size_t operator-=(size_t num)
+        {
+            size_t old_v = (((obj_ptr_->data_) >> offset_) & one_card_type_mask_).to_ullong();
+            if (old_v < num) {
+                throw std::overflow_error("Card num underflowed.")
+            }
+            size_t new_v = old_v - num;
+            return operator=(new_v);
         }
     };
-
-    struct iterator
-    {
-        using iterator_category = std::random_access_iterator_tag;
-        using iterator_concept = std::random_access_iterator_tag;
-        using difference_type = std::ptrdiff_t;
-        using value_type = std::pair<Card, size_t>;
-        using pointer = std::shared_ptr<std::pair<Card, proxy>>;
-        using reference = std::pair<Card, proxy>;
-
-        iterator(data_type *data_ptr, size_t index = 0ULL) : data_ptr_(data_ptr), index_(index) {}
-
-        reference operator*() const { return {Card(index_), proxy(data_ptr_, index_)}; }
-        pointer operator->() { return std::move(std::make_shared<std::pair<Card, proxy>>(Card(index_), proxy(data_ptr_, index_))); }
-        iterator &operator++()
-        {
-            index_++;
-            return *this;
-        }
-        iterator operator++(int)
-        {
-            iterator tmp = *this;
-            ++(*this);
-            return tmp;
-        }
-        iterator &operator--()
-        {
-            index_--;
-            return *this;
-        }
-        iterator operator--(int)
-        {
-            iterator tmp = *this;
-            --(*this);
-            return tmp;
-        }
-        friend bool operator==(const iterator &a, const iterator &b) { return a.index_ == b.index_ && a.data_ptr_ == b.data_ptr_; }
-        friend bool operator!=(const iterator &a, const iterator &b) { return a.index_ != b.index_ || a.data_ptr_ != b.data_ptr_; }
-        iterator operator+(const difference_type &n) const { return iterator(data_ptr_, index_ + n); }
-        iterator &operator+=(const difference_type &n)
-        {
-            index_ += n;
-            return *this;
-        }
-        iterator operator-(const difference_type &n) const { return iterator(data_ptr_, index_ - n); }
-        iterator &operator-=(const difference_type &n)
-        {
-            index_ -= n;
-            return *this;
-        }
-        bool operator<(const iterator &o) const { return index_ < o.index_; }
-        bool operator>(const iterator &o) const { return index_ > o.index_; }
-        bool operator<=(const iterator &o) const { return index_ <= o.index_; }
-        bool operator>=(const iterator &o) const { return index_ >= o.index_; }
-        difference_type operator+(const iterator &o) const { return index_ + o.index_; }
-        difference_type operator-(const iterator &o) const { return index_ - o.index_; }
-
-    private:
-        size_t index_;
-        data_type *data_ptr_;
-    };
-
-public:
-    iterator begin() { return iterator(&data_, 0); }
-    iterator end() { return iterator(&data_, kCardTypesPerPack); }
 };
 
 // hash definition
@@ -255,33 +212,5 @@ namespace utils
         static std::array<std::string, kCardTypesPerPack> card_names =
             {"3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "2", "Black Joker", "Red Joker"};
         return card_names.at(static_cast<size_t>(card));
-    }
-
-    // get start index of a card in a bitset
-    template <size_t CARD_PACKS_N>
-    constexpr size_t bitset_begin(Card card)
-    {
-        if (card != Card::RedJoker) [[likely]]
-        {
-            return static_cast<size_t>(card) * 4ULL * CARD_PACKS_N;
-        }
-        else
-        {
-            return (static_cast<size_t>(Card::RedJoker) * 4ULL - 3ULL) * CARD_PACKS_N;
-        }
-    }
-
-    // get end index of a dard in a bitset
-    template <size_t CARD_PACKS_N>
-    constexpr size_t bitset_end(Card card)
-    {
-        switch (card)
-        {
-        case Card::BlackJoker:
-            return (static_cast<size_t>(Card::RedJoker) * 4ULL - 3ULL) * CARD_PACKS_N;
-        case Card::RedJoker:
-            return kCardsPerPack * CARD_PACKS_N;
-            [[likely]] default : return (static_cast<size_t>(card) + 1ULL) * 4ULL * CARD_PACKS_N;
-        }
     }
 } // namespace utils
