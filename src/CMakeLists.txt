@@ -4,8 +4,8 @@ add_library(
     Pattern.cpp
 )
 
-# set C++ minimum standard to 17
-target_compile_features(PokerSolver PRIVATE cxx_std_17)
+# set C++ minimum standard to 20
+target_compile_features(PokerSolver PRIVATE cxx_std_20) # we need three way comparison operator
 set_target_properties(PokerSolver PROPERTIES CXX_EXTENSIONS OFF)
 
 target_include_directories(
