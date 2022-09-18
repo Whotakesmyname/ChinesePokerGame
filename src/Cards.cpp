@@ -9,7 +9,8 @@ Cards::Cards(std::vector<Card> cards) {
         assert(histogram[card] < 127 && "Card number for a type overflowed.");
         histogram[card]++;
     }
-    cards_ = _mm_loadu_epi8(histogram);
+    static_assert(sizeof(histogram) == 16u); // ensure same size as m128i
+    cards_ = _mm_loadu_si128((__m128i *)histogram);
 }
 
 bool Cards::contains(const Cards& other) const {

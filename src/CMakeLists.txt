@@ -1,4 +1,8 @@
-add_library(PokerSolver Cards.cpp)
+add_library(
+    PokerSolver
+    Cards.cpp
+    Pattern.cpp
+)
 
 # set C++ minimum standard to 17
 target_compile_features(PokerSolver PRIVATE cxx_std_17)
@@ -11,5 +15,5 @@ target_include_directories(
 
 # add SSE support (SSE2 is so old that I assume it should have been already supported)
 if (NOT MSVC)
-    target_compile_options(PokerSolver PUBLIC -march=native)
+    target_compile_options(PokerSolver PUBLIC -msse4.1)
 endif()
