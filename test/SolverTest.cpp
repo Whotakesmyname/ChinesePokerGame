@@ -14,5 +14,6 @@ TEST(CardsTest, Constructor) {
 TEST(CardsTest, ContainsAnother) {
     EXPECT_TRUE(Cards({Three, Three}).contains(Cards{{Three}}));
     EXPECT_TRUE(Cards({Three, Four}).contains(Cards{{Three}}));
+    EXPECT_TRUE(Cards({Three, Four}).contains(Cards{{Four}}));
     EXPECT_FALSE(Cards({Three}).contains(Cards{{Three, Three}}));
 }

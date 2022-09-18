@@ -14,5 +14,6 @@ Cards::Cards(std::vector<Card> cards) {
 }
 
 bool Cards::contains(const Cards& other) const {
-    return !_mm_movemask_epi8(_mm_cmplt_epi8(cards_, other.cards_));
+    __m128i neq = _mm_cmplt_epi8(cards_, other.cards_);
+    return _mm_test_all_zeros(neq, neq);
 }
