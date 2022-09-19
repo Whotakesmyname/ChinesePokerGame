@@ -4,7 +4,12 @@
 
 #include <compare>
 
+// forward declaration
+class Hand;
+
 class Pattern : public Cards {
+    friend class Hand;
+
 public:
     using Cards::Cards;
 };
