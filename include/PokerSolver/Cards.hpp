@@ -17,6 +17,7 @@
 class Cards {
     friend bool operator==(const Cards&, const Cards&);
 
+protected:
     // a collection of cards
     __m128i cards_;
 

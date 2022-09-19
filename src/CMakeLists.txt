@@ -2,6 +2,7 @@ add_library(
     PokerSolver
     Cards.cpp
     Pattern.cpp
+    Hand.cpp
 )
 
 # set C++ minimum standard to 20

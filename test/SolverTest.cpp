@@ -3,7 +3,9 @@
 #include <unordered_set>
 
 #include "Cards.hpp"
+#include "Pattern.hpp"
 
+// mark: Cards
 TEST(CardsTest, Constructor) {
     EXPECT_NO_THROW({
         Cards();
@@ -31,4 +33,25 @@ TEST(CardsTest, HashFunction) {
 TEST(CardsTest, EqualityOp) {
     EXPECT_TRUE(Cards({J, Q, K}) == Cards({K, J, Q}));
     EXPECT_FALSE(Cards({Three, Five}) == Cards({Five, Four}));
+}
+
+// mark: Pattern
+TEST(PatternTest, Constructor) {
+    EXPECT_NO_THROW({
+        Pattern();
+        Pattern({A});
+        Pattern({A, J, Q});
+    });
+}
+
+TEST(PatternTest, ComparePatterns) {
+    EXPECT_FALSE(Single() < Double());
+    EXPECT_FALSE(Single() > Double());
+    EXPECT_EQ(Single() <=> Double(), std::partial_ordering::unordered);
+}
+
+TEST(PatternTest, CompareNone) {
+    EXPECT_TRUE((None() <=> Single()) < 0);
+    EXPECT_TRUE((Single() <=> None()) > 0);
+    EXPECT_TRUE(None() == None());
 }
