@@ -14,4 +14,4 @@ target_include_directories(
 )
 
 # add SSE support (SSE2 is so old that I assume it should have been already supported)
-target_compile_options(PokerSolver PRIVATE $<IF:$<BOOL:${MSVC}>,/arch:SSE4.1,-msse4.1>)
+target_compile_options(PokerSolver PUBLIC $<IF:$<BOOL:${MSVC}>,/arch:SSE4.1,-msse4.1>)

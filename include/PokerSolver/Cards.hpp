@@ -2,6 +2,8 @@
 
 #include <immintrin.h>
 #include <vector>
+#include <concepts>
+#include <functional>
 
 #include "Card.hpp"
 
@@ -13,6 +15,8 @@
  * #13 slot is reserved for convenience.
  */
 class Cards {
+    friend bool operator==(const Cards&, const Cards&);
+
     // a collection of cards
     __m128i cards_;
 
@@ -29,4 +33,28 @@ public:
      * @return contains or not 
      */
     bool contains(const Cards& other) const;
+
+    /**
+     * @brief hash function combines 4 lower bits of each byte
+     * 
+     * @return std::size_t hash result
+     */
+    std::size_t hash() const noexcept;
 };
+
+namespace std {
+// add hash function for Cards and its derived classes
+template<typename T>
+requires derived_from<T, Cards>
+struct hash<T> {
+    size_t operator()(const T& cards) const noexcept {
+        return cards.hash();
+    }
+};
+}
+
+// add equality compare function for convenience for simd type
+inline bool operator==(const Cards& lhs, const Cards& rhs) {
+    __m128i neq = _mm_xor_si128(lhs.cards_, rhs.cards_);
+    return _mm_test_all_zeros(neq, neq);
+}

@@ -17,3 +17,8 @@ bool Cards::contains(const Cards& other) const {
     __m128i neq = _mm_cmplt_epi8(cards_, other.cards_);
     return _mm_test_all_zeros(neq, neq);
 }
+
+std::size_t Cards::hash() const noexcept {
+    __m128i higher_half = _mm_srli_si128(_mm_slli_epi64(cards_, 4), 8);
+    return _mm_cvtsi128_si64(_mm_or_si128(cards_, higher_half));
+}
