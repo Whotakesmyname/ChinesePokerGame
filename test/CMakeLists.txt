@@ -1,6 +1,6 @@
 add_executable(SolverTest SolverTest.cpp)
 
-target_compile_features(SolverTest PRIVATE cxx_std_17)
+target_compile_features(SolverTest PRIVATE cxx_std_20)
 
 include(FetchContent)
 FetchContent_Declare(
