@@ -14,3 +14,10 @@ Double::Double(std::vector<Card> cards): Pattern(cards), power_(cards.front()) {
     assert(cards.size() == 2 && "Too many or less cards for pattern Double.");
     assert(cards.front() == cards.back() && "Double must have two same cards.");
 }
+
+Triple::Triple(Card card): Pattern({card, card, card}), power_(card) {}
+
+Triple::Triple(std::vector<Card> cards): Pattern(cards), power_(cards.front()) {
+    assert(cards.size() == 3 && "Too many or less cards for pattern Triple.");
+    assert(cards.front() == cards.back() && "Triple must have three same cards.");
+}

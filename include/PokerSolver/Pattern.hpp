@@ -58,3 +58,16 @@ public:
 inline std::partial_ordering operator<=>(const Double& a, const Double& b) {
     return a.power_ <=> b.power_;
 }
+
+// MARK: Triple
+class Triple : public Pattern {
+public:
+    Triple(Card card);
+    Triple(std::vector<Card> cards);
+
+    int power_;
+};
+
+inline std::partial_ordering operator<=>(const Triple& a, const Triple& b) {
+    return a.power_ <=> b.power_;
+}

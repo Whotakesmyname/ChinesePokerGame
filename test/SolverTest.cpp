@@ -52,6 +52,11 @@ TEST(PatternTest, Constructor) {
         Double{A}; // dkw can't use () here, otherwise it will call default ctor
         Double({A, A});
     });
+
+    EXPECT_NO_THROW({
+        Triple{A}; // dkw can't use () here, otherwise it will call default ctor
+        Triple({A, A, A});
+    });
 }
 
 TEST(PatternTest, ComparePatterns) {
@@ -82,4 +87,13 @@ TEST(PatternTest, CompareDouble) {
     EXPECT_TRUE((Double(Two) <=> Double(Three)) > 0);
     EXPECT_TRUE((Double(Ten) <=> Double(Ten)) == 0);
     EXPECT_TRUE((Double(A) <=> Double({A, A})) == 0);
+}
+
+TEST(PatternTest, CompareTriple) {
+    EXPECT_TRUE((Triple(Four) <=> Triple(Five)) < 0);
+    EXPECT_TRUE((Triple(RedJoker) <=> Triple(BlackJoker)) > 0);
+    EXPECT_TRUE((Triple(BlackJoker) <=> Triple(Two)) > 0);
+    EXPECT_TRUE((Triple(Two) <=> Triple(Three)) > 0);
+    EXPECT_TRUE((Triple(Ten) <=> Triple(Ten)) == 0);
+    EXPECT_TRUE((Triple(A) <=> Triple({A, A, A})) == 0);
 }
