@@ -25,6 +25,7 @@ public:
     Cards() = default;
     Cards(const Cards&) = default;
     Cards(Cards&&) = default;
+    Cards(Card card); // convenient ctor for single card
     Cards(std::vector<Card> cards); // init with a vector of cards
 
     /**

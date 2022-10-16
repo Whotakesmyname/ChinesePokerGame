@@ -19,7 +19,7 @@ inline std::partial_ordering operator<=>(const Pattern&, const Pattern&) {
     return std::partial_ordering::unordered;
 }
 
-// mark: None
+// MARK: None
 class None : public Pattern {
 public:
     None() = default;
@@ -33,12 +33,28 @@ inline std::partial_ordering operator<=>(const None&, const None&) {
     return std::partial_ordering::equivalent;
 }
 
-// mark: Single
+// MARK: Single
 class Single : public Pattern {
+public:
+    Single(Card card);
+    Single(std::vector<Card> cards);
 
+    int power_;
 };
 
-// mark: Double
+inline std::partial_ordering operator<=>(const Single& a, const Single& b) {
+    return a.power_ <=> b.power_;
+}
+
+// MARK: Double
 class Double : public Pattern {
+public:
+    Double(Card card);
+    Double(std::vector<Card> cards);
 
+    int power_;
 };
+
+inline std::partial_ordering operator<=>(const Double& a, const Double& b) {
+    return a.power_ <=> b.power_;
+}

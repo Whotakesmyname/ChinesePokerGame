@@ -42,16 +42,44 @@ TEST(PatternTest, Constructor) {
         Pattern({A});
         Pattern({A, J, Q});
     });
+
+    EXPECT_NO_THROW({
+        Single{A}; // dkw can't use () here, otherwise it will call default ctor
+        Single({A});
+    });
+
+    EXPECT_NO_THROW({
+        Double{A}; // dkw can't use () here, otherwise it will call default ctor
+        Double({A, A});
+    });
 }
 
 TEST(PatternTest, ComparePatterns) {
-    EXPECT_FALSE(Single() < Double());
-    EXPECT_FALSE(Single() > Double());
-    EXPECT_EQ(Single() <=> Double(), std::partial_ordering::unordered);
+    EXPECT_FALSE(Single(Three) < Double(Four));
+    EXPECT_FALSE(Single(Four) > Double(Three));
+    EXPECT_EQ(Single(Five) <=> Double(Five), std::partial_ordering::unordered);
 }
 
 TEST(PatternTest, CompareNone) {
-    EXPECT_TRUE((None() <=> Single()) < 0);
-    EXPECT_TRUE((Single() <=> None()) > 0);
+    EXPECT_TRUE((None() <=> Single(A)) < 0);
+    EXPECT_TRUE((Single(RedJoker) <=> None()) > 0);
     EXPECT_TRUE(None() == None());
+}
+
+TEST(PatternTest, CompareSingle) {
+    EXPECT_TRUE((Single(Four) <=> Single(Five)) < 0);
+    EXPECT_TRUE((Single(RedJoker) <=> Single(BlackJoker)) > 0);
+    EXPECT_TRUE((Single(BlackJoker) <=> Single(Two)) > 0);
+    EXPECT_TRUE((Single(Two) <=> Single(Three)) > 0);
+    EXPECT_TRUE((Single(Ten) <=> Single(Ten)) == 0);
+    EXPECT_TRUE((Single(A) <=> Single({A})) == 0);
+}
+
+TEST(PatternTest, CompareDouble) {
+    EXPECT_TRUE((Double(Four) <=> Double(Five)) < 0);
+    EXPECT_TRUE((Double(RedJoker) <=> Double(BlackJoker)) > 0);
+    EXPECT_TRUE((Double(BlackJoker) <=> Double(Two)) > 0);
+    EXPECT_TRUE((Double(Two) <=> Double(Three)) > 0);
+    EXPECT_TRUE((Double(Ten) <=> Double(Ten)) == 0);
+    EXPECT_TRUE((Double(A) <=> Double({A, A})) == 0);
 }

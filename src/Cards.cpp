@@ -2,6 +2,14 @@
 
 #include <cassert>
 
+Cards::Cards(Card card) {
+    assert(card >= 0 && card < 16 && card != 13 && "Invalid card input.");
+    uint8_t histogram[16] = {0};
+    histogram[card] = 1;
+    static_assert(sizeof(histogram) == 16u); // ensure same size as m128i
+    cards_ = _mm_loadu_si128((__m128i *)histogram);
+}
+
 Cards::Cards(std::vector<Card> cards) {
     uint8_t histogram[16] = {0};
     for (const auto card : cards) {

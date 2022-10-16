@@ -10,4 +10,5 @@ Hand Hand::play_pattern(const Pattern& pattern) const {
     Hand new_hand(*this);
     new_hand.cards_ = _mm_sub_epi8(new_hand.cards_, pattern.cards_);
     // TODO: delete invalid patterns
+    return new_hand;
 }
